@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ff6812">
+  <meta name="description" content="Диагностический тест для практикующих бухгалтеров перед Всероссийской аттестацией — 2027.">
+  <title>Проверка знаний бухгалтера — 2027</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23181713'/%3E%3Cpath d='M15 18h34v9H37v24H27V27H15z' fill='%23ff6812'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Высшая школа Главбух">
+        <img class="brand-logo" src="logo.png" alt="Высшая школа Главбух">
+      </div>
+      <span class="status-pill">Диагностика знаний · 2027</span>
+    </header>
+
+    <main>
+      <section class="screen" id="intro-screen">
+        <div class="intro-grid">
+          <div class="intro-copy">
+            <p class="eyebrow">Для практикующих бухгалтеров</p>
+            <h1>Проверьте знания перед <span>Всероссийской аттестацией бухгалтеров — 2027</span></h1>
+            <p class="lead">Ответьте на рабочие вопросы, узнайте свой профессиональный уровень и получите персональные рекомендации.</p>
+            <div class="meta-row" aria-label="Информация о тесте">
+              <span class="meta">14 вопросов</span>
+              <span class="meta">Около 7 минут</span>
+              <span class="meta">Персональный результат</span>
+            </div>
+            <button class="primary" id="start-button" type="button">Начать тест</button>
+          </div>
+          <figure class="hero-visual" aria-hidden="true">
+            <img src="attestation-visual.png" alt="">
+          </figure>
+        </div>
+      </section>
+
+      <section class="screen" id="quiz-screen" hidden>
+        <div class="quiz-wrap">
+          <div class="progress-head">
+            <span id="question-number">Вопрос 1 из 10</span>
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
+          <article class="question-card">
+            <p class="category" id="question-category"></p>
+            <h2 id="question-title"></h2>
+            <div class="answers" id="answers"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" id="result-screen" hidden>
+        <div class="result-wrap">
+          <article class="result-card">
+            <p class="eyebrow">Ваш результат</p>
+            <div class="score-line">
+              <strong class="score" id="score">0%</strong>
+              <span class="score-caption">правильных ответов</span>
+            </div>
+            <h2 id="result-title"></h2>
+            <p class="result-copy" id="result-copy"></p>
+            <div class="breakdown" id="breakdown" aria-label="Результаты по темам"></div>
+
+            <div class="recommendation">
+              <h3>Продолжите подготовку к изменениям 2027 года</h3>
+              <p>В программе вы разберёте новые ФСБУ, ЕНС, цифровой рубль, налоги, зарплату, отчётность и получите удостоверение с Аттестатом Главбуха 2027.</p>
+              <a class="primary" id="program-link" href="https://univer.glavbukh.ru/promo/233790">Зарегистрироваться и начать обучение</a>
+            </div>
+            <div class="result-actions">
+              <button class="secondary" id="restart-button" type="button">Пройти тест ещё раз</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>Диагностический результат носит информационный характер и не заменяет итоговую аттестацию.</footer>
+  </div>
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
