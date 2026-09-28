@@ -1,5 +1,7 @@
 const PROGRAM_URL = "https://univer.glavbukh.ru/promo/233790?utm_source=knowledge_test&utm_medium=webapp&utm_campaign=attestation_2027";
 const STORAGE_KEY = "glavbukh-test-progress-v2";
+const METRIKA_COUNTER_ID = 113132415;
+const METRIKA_GOALS = new Set(["test_start", "test_complete", "program_click", "test_restart"]);
 const questions = window.TEST_QUESTIONS || [];
 
 const screens = {
@@ -25,6 +27,9 @@ function saveState() {
 function track(eventName, params = {}) {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event: eventName, ...params });
+  if (METRIKA_GOALS.has(eventName) && typeof window.ym === "function") {
+    window.ym(METRIKA_COUNTER_ID, "reachGoal", eventName, params);
+  }
   window.dispatchEvent(new CustomEvent("gb-analytics", { detail: { eventName, params } }));
 }
 
@@ -37,6 +42,7 @@ function startTest(reset = false) {
   if (reset) {
     state.current = 0;
     state.answers = [];
+    state.completionTracked = false;
     saveState();
   }
   if (state.answers.length >= questions.length && questions.length) {
@@ -82,7 +88,6 @@ function submitAnswer(answerIndex) {
   saveState();
 
   if (state.current >= questions.length) {
-    track("test_complete");
     renderResult();
   } else {
     renderQuestion();
@@ -113,6 +118,16 @@ function renderResult() {
   const percent = questions.length ? Math.round((correct / questions.length) * 100) : 0;
   const level = getLevel(percent);
 
+  if (!state.completionTracked && state.answers.length >= questions.length) {
+    const resultParams = { correct, total: questions.length, percent, level: level.title };
+    track("test_complete", resultParams);
+    if (typeof window.ym === "function") {
+      window.ym(METRIKA_COUNTER_ID, "params", { test_result: resultParams });
+    }
+    state.completionTracked = true;
+    saveState();
+  }
+
   document.querySelector("#score").textContent = `${percent}%`;
   document.querySelector("#result-title").textContent = level.title;
   document.querySelector("#result-copy").textContent = level.text;
@@ -141,7 +156,10 @@ function renderResult() {
 }
 
 document.querySelector("#start-button").addEventListener("click", () => startTest(false));
-document.querySelector("#restart-button").addEventListener("click", () => startTest(true));
+document.querySelector("#restart-button").addEventListener("click", () => {
+  track("test_restart");
+  startTest(true);
+});
 document.querySelector("#program-link").addEventListener("click", () => track("program_click", { program: "233790" }));
 
 if (state.answers.length > 0 && state.answers.length < questions.length) {
