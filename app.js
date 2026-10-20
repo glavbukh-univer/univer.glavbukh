@@ -225,8 +225,12 @@ const certificatePreview = document.querySelector("#certificate-preview");
 const certificateDialog = document.querySelector("#certificate-dialog");
 const certificateClose = document.querySelector("#certificate-close");
 
-certificatePreview.addEventListener("click", () => {
+certificatePreview.addEventListener("click", event => {
   track("certificate_open");
+  const useFullImage = window.matchMedia("(max-width: 800px)").matches
+    || typeof certificateDialog.showModal !== "function";
+  if (useFullImage) return;
+  event.preventDefault();
   certificateDialog.showModal();
 });
 certificateClose.addEventListener("click", () => certificateDialog.close());
