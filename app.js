@@ -151,7 +151,13 @@ function renderWeakTopics(categories) {
     return;
   }
 
-  ranked.slice(0, 2).forEach(topic => {
+  const minimumPercent = ranked[0].percent;
+  const weakestTopics = ranked.filter(topic => topic.percent === minimumPercent);
+  container.querySelector("p").textContent = weakestTopics.length === 1
+    ? "В первую очередь обратите внимание на тему:"
+    : "В первую очередь обратите внимание на темы:";
+
+  weakestTopics.forEach(topic => {
     const item = document.createElement("span");
     item.textContent = `${topic.name} — ${topic.percent}%`;
     list.appendChild(item);
