@@ -172,7 +172,7 @@ if (document.modelContext?.registerTool) {
   safeRegister({
     name: "read_test_progress",
     title: "Показать прогресс теста",
-    description: "Возвращает текущий прогресс диагностического теста без изменения ответов.",
+    description: "Возвращает текущий прогресс теста без изменения ответов.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     annotations: { readOnlyHint: true, untrustedContentHint: false },
     execute: async () => ({ answered: state.answers.length, total: questions.length, completed: state.answers.length >= questions.length })
