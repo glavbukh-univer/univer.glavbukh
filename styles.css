@@ -277,6 +277,37 @@ h1 span { display: block; }
   font-size: 1.05rem;
 }
 
+.weak-topics {
+  margin-top: 22px;
+  padding: 18px 20px;
+  background: #fff4ed;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+}
+
+.weak-topics p {
+  margin: 0 0 10px;
+  color: #4f4d47;
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.weak-topics-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.weak-topics-list span {
+  padding: 7px 10px;
+  color: #9d3d08;
+  background: #fff;
+  border: 1px solid rgba(232, 81, 0, .22);
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
 .breakdown {
   display: grid;
   gap: 14px;
@@ -292,7 +323,14 @@ h1 span { display: block; }
 }
 
 .mini-track { height: 7px; overflow: hidden; background: #eceae4; border-radius: 999px; }
-.mini-bar { height: 100%; background: var(--neutral); border-radius: inherit; }
+.mini-bar {
+  width: 0;
+  height: 100%;
+  background: var(--neutral);
+  border-radius: inherit;
+  transition: width .8s cubic-bezier(.22, 1, .36, 1);
+}
+.breakdown.is-visible .mini-bar { width: var(--target-width); }
 .mini-bar.low { background: var(--primary); }
 .mini-bar.medium { background: var(--yellow); }
 .mini-bar.high { background: var(--success); }
@@ -443,13 +481,103 @@ h1 span { display: block; }
   line-height: 1.5;
 }
 
-.documents img {
+.certificate-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: zoom-in;
+  text-align: center;
+}
+
+.certificate-preview img {
   display: block;
   width: 100%;
   height: auto;
   border: 1px solid #d7dce5;
   border-radius: 9px;
   box-shadow: 0 14px 34px rgba(24, 39, 67, .10);
+  transition: transform .25s ease, filter .25s ease;
+}
+
+.certificate-preview:hover img {
+  transform: scale(1.012);
+  filter: brightness(.94);
+}
+
+.certificate-preview span {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  padding: 9px 13px;
+  color: var(--white);
+  background: rgba(24, 23, 19, .78);
+  border-radius: 999px;
+  font-size: .76rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity .2s ease, transform .2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.certificate-preview:hover span,
+.certificate-preview:focus-visible span {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.certificate-preview:focus-visible {
+  outline: 3px solid rgba(255,104,18,.28);
+  outline-offset: 3px;
+}
+
+.certificate-dialog {
+  width: min(1100px, calc(100% - 32px));
+  max-width: none;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+}
+
+.certificate-dialog::backdrop {
+  background: rgba(15, 14, 12, .82);
+  backdrop-filter: blur(5px);
+}
+
+.certificate-dialog img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100vh - 50px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.certificate-close {
+  position: absolute;
+  z-index: 2;
+  top: -18px;
+  right: -18px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  place-items: center;
+  color: var(--ink);
+  background: var(--white);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+  cursor: pointer;
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
 .program-action {
@@ -506,6 +634,23 @@ footer {
     padding: 13px 16px;
     font-size: .98rem;
   }
+  .weak-topics-list {
+    display: grid;
+  }
+  .weak-topics-list span {
+    border-radius: 8px;
+  }
+  .certificate-preview span {
+    right: 12px;
+    bottom: 12px;
+    left: auto;
+    opacity: 1;
+    transform: none;
+  }
+  .certificate-close {
+    top: -14px;
+    right: -6px;
+  }
   .program-disclosure summary {
     padding: 18px 50px 18px 18px;
   }
@@ -525,4 +670,5 @@ footer {
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  .breakdown .mini-bar { width: var(--target-width); }
 }

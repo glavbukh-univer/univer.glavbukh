@@ -81,6 +81,10 @@
             </div>
             <h2 id="result-title"></h2>
             <p class="result-copy" id="result-copy"></p>
+            <div class="weak-topics" id="weak-topics" hidden>
+              <p>В первую очередь обратите внимание на:</p>
+              <div class="weak-topics-list" id="weak-topics-list"></div>
+            </div>
             <div class="breakdown" id="breakdown" aria-label="Результаты по темам"></div>
 
             <details class="program-disclosure" id="program-disclosure">
@@ -141,7 +145,10 @@
                 <h3 id="documents-title">Официальные документы после окончания обучения</h3>
                 <p>Удостоверение о повышении квалификации и Аттестат Главбуха 2027.</p>
               </div>
-              <img src="program-certificate.png" alt="Пример удостоверения о повышении квалификации Высшей школы Главбух" loading="lazy">
+              <button class="certificate-preview" id="certificate-preview" type="button" aria-label="Увеличить удостоверение">
+                <img src="program-certificate.png" alt="Пример удостоверения о повышении квалификации Высшей школы Главбух" loading="lazy">
+                <span>Увеличить</span>
+              </button>
             </section>
 
             <div class="program-action">
@@ -157,6 +164,12 @@
 
     <footer>Результат носит информационный характер и не заменяет итоговую аттестацию.</footer>
   </div>
+
+  <dialog class="certificate-dialog" id="certificate-dialog" aria-label="Увеличенное удостоверение">
+    <button class="certificate-close" id="certificate-close" type="button" aria-label="Закрыть">×</button>
+    <img src="program-certificate.png" alt="Увеличенный пример удостоверения о повышении квалификации Высшей школы Главбух">
+  </dialog>
+
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>

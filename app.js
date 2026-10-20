@@ -113,6 +113,52 @@ function getLevel(percent) {
   };
 }
 
+function getProgramButtonText(percent) {
+  if (percent < 50) return "Закрыть пробелы в знаниях";
+  if (percent < 80) return "Подготовиться к изменениям 2027";
+  return "Подтвердить квалификацию";
+}
+
+function animateScore(percent) {
+  const score = document.querySelector("#score");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    score.textContent = `${percent}%`;
+    return;
+  }
+
+  const duration = 700;
+  const startedAt = performance.now();
+  const tick = now => {
+    const progress = Math.min((now - startedAt) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    score.textContent = `${Math.round(percent * eased)}%`;
+    if (progress < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function renderWeakTopics(categories) {
+  const container = document.querySelector("#weak-topics");
+  const list = document.querySelector("#weak-topics-list");
+  const ranked = Object.entries(categories)
+    .map(([name, value]) => ({ name, percent: Math.round((value.correct / value.total) * 100) }))
+    .sort((a, b) => a.percent - b.percent);
+
+  list.innerHTML = "";
+  if (!ranked.length || ranked[0].percent === 100) {
+    container.hidden = true;
+    return;
+  }
+
+  ranked.slice(0, 2).forEach(topic => {
+    const item = document.createElement("span");
+    item.textContent = `${topic.name} — ${topic.percent}%`;
+    list.appendChild(item);
+  });
+  container.hidden = false;
+}
+
 function renderResult() {
   const correct = state.answers.filter(item => item.correct).length;
   const percent = questions.length ? Math.round((correct / questions.length) * 100) : 0;
@@ -128,10 +174,12 @@ function renderResult() {
     saveState();
   }
 
-  document.querySelector("#score").textContent = `${percent}%`;
+  document.querySelector("#score").textContent = "0%";
   document.querySelector("#result-title").textContent = level.title;
   document.querySelector("#result-copy").textContent = level.text;
-  document.querySelector("#program-link").href = PROGRAM_URL;
+  const programLink = document.querySelector("#program-link");
+  programLink.href = PROGRAM_URL;
+  programLink.textContent = getProgramButtonText(percent);
 
   const categories = {};
   state.answers.forEach(item => {
@@ -142,14 +190,19 @@ function renderResult() {
 
   const breakdown = document.querySelector("#breakdown");
   breakdown.innerHTML = "";
+  breakdown.classList.remove("is-visible");
   Object.entries(categories).forEach(([name, value]) => {
     const categoryPercent = Math.round((value.correct / value.total) * 100);
     const row = document.createElement("div");
     row.className = "breakdown-row";
     const colorClass = categoryPercent >= 75 ? "high" : categoryPercent >= 50 ? "medium" : "low";
-    row.innerHTML = `<strong>${name}</strong><div class="mini-track"><div class="mini-bar ${colorClass}" style="width:${categoryPercent}%"></div></div><span>${categoryPercent}%</span>`;
+    row.innerHTML = `<strong>${name}</strong><div class="mini-track"><div class="mini-bar ${colorClass}" style="--target-width:${categoryPercent}%"></div></div><span>${categoryPercent}%</span>`;
     breakdown.appendChild(row);
   });
+
+  renderWeakTopics(categories);
+  animateScore(percent);
+  requestAnimationFrame(() => requestAnimationFrame(() => breakdown.classList.add("is-visible")));
 
   track("result_view", { percent, level: level.title });
   showScreen("result");
@@ -161,6 +214,19 @@ document.querySelector("#restart-button").addEventListener("click", () => {
   startTest(true);
 });
 document.querySelector("#program-link").addEventListener("click", () => track("program_click", { program: "233790" }));
+
+const certificatePreview = document.querySelector("#certificate-preview");
+const certificateDialog = document.querySelector("#certificate-dialog");
+const certificateClose = document.querySelector("#certificate-close");
+
+certificatePreview.addEventListener("click", () => {
+  track("certificate_open");
+  certificateDialog.showModal();
+});
+certificateClose.addEventListener("click", () => certificateDialog.close());
+certificateDialog.addEventListener("click", event => {
+  if (event.target === certificateDialog) certificateDialog.close();
+});
 
 if (state.answers.length > 0 && state.answers.length < questions.length) {
   document.querySelector("#start-button").textContent = "Продолжить тест";
